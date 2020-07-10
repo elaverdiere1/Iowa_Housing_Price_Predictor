@@ -1,183 +1,147 @@
-# Project 2 - Ames Housing Data and Kaggle Challenge
+# Project 2 Housing Price Prediction
 
-Welcome to Project 2! It's time to start modeling.
+## Problem Statement
 
-**Primary Learning Objectives:**
-1. Creating and iteratively refining a regression model
-2. Using [Kaggle](https://www.kaggle.com/) to practice the modeling process
-3. Providing business insights through reporting and presentation.
+I was given a data set for the housing values in Ames Iowa and tasked with figuring out a way to perdict the potential sale prices of houses using data with known sale prices.
 
-You are tasked with creating a regression model based on the Ames Housing Dataset. This model will predict the price of a house at sale.
+The data will be presented to the Ames city government to try and help them make redevelopment decision for the city while trying to avoid the issues of displacement or gentrification.
 
-The Ames Housing Dataset is an exceptionally detailed and robust dataset with over 70 columns of different features relating to houses.
+## Summary
 
-Secondly, we are hosting a competition on Kaggle to give you the opportunity to practice the following skills:
+Things to look at in this report.
 
-- Refining models over time
-- Use of train-test split, cross-validation, and data with unknown values for the target to simulate the modeling process
-- The use of Kaggle as a place to practice data science
+- taking in the data and cleaning it
+- creating visuals to try and understand the data
+- pick which features are worth using in a regression model
+- figure out what features are also important to the problem which might not all be the same as what is good for the regression model
+- how can those features be used in land development decisions
+- how is the final model and sale prices important to city planning
 
-As always, you will be submitting a technical report and a presentation. **You may find that the best model for Kaggle is not the best model to address your data science problem.**
+## Data Dictionary
 
-## Set-up
+|     Feature     | Type | Description |
+|:----------------|------|-------------|
+| Id              | int |ID number of each house|
+| PID             | int |Parcel identification number|
+| MS SubClass     | int |The building class|
+| MS Zoning       | object |The general zoning classification|
+| Lot Frontage    | float |Linear feet of street connected to property|
+| Lot Area        | int |Lot size in square feet|
+| Street          | object |Type of road access|
+| Alley           |  object |Type of alley access|
+| Lot Shape       | object |General shape of property|
+| Land Contour    | object |Flatness of the property|
+| Utilities       | object |Type of utilities available|
+| Lot Config      | object |Lot configuration|
+| Land Slope      | object |Slope of property|
+| Neighborhood    | object |Physical locations within Ames city limits|
+| Condition 1     | object |Proximity to main road or railroad|
+| Condition 2     | object |Proximity to main road or railroad(if second is present)|
+| Bldg Type       | object |Type of dwelling|
+| House Style     | object |Stlye of dwelling|
+| Overall Qual    | int |Overall material and finish quality|
+| Overall Cond    | int |Overall condition rating|
+| Year Built      | int |Original construction date|
+| Year Remod/Add  | int |Remodel date|
+| Roof Style      | object |Type of roof|
+| Roof Matl       | object |Roof material|
+| Exterior 1st    | object |Exterior covering on house|
+| Exterior 2nd    | object |Exterior covering on house (if more than one material)|
+| Mas Vnr Type    | object |Masonry veneer type|
+| Mas Vnr Area    | float |Masonry veneer area in square feet|
+| Exter Qual      | object |Exterior material quality|
+| Exter Cond      | object |Present condition of the material on the exterior|
+| Foundation      | object |Type of foundation|
+| Bsmt Qual       | object |Height of the basement|
+| Bsmt Cond       | object |General condition of the basement|
+| Bsmt Exposure   | object |Walkout or garden level basement walls|
+| BsmtFin Type 1  | object |Quality of basement finished area|
+| BsmtFin SF 1    | float |Type 1 finished square feet|
+| BsmtFin Type 2  | object |Quality of second finished area (if present)|
+| BsmtFin SF 2    | float |Type 2 finished square feet|
+| Bsmt Unf SF     | float |Unfinished square feet of basement area|
+| Total Bsmt SF   | float |Total square feet of basement area|
+| Heating         | object |Type of heating|
+| Heating QC      | object |Heating quality and condition|
+| Central Air     | object |Central air conditioning|
+| Electrical      | object |Electrical system|
+| 1st Flr SF      | int |First Floor square feet|
+| 2nd Flr SF      | int |Second Floor square feet|
+| Low Qual Fin SF | int |Low quality finished square feet (all floors)|
+| Gr Liv Area     | int |Above grade (ground) living area square feet|
+| Bsmt Full Bath  | float |Basement full bathrooms|
+| Bsmt Half Bath  | float |Basement half bathrooms|
+| Full Bath       | int |Full bathrooms above grade|
+| Half Bath       | int |Half baths above grade|
+| Bedroom AbvGr   | int |Number of bedrooms above basement level|
+| Kitchen AbvGr   | int |Number of kitchens|
+| Kitchen Qual    | object |Kitchen quality|
+| TotRms AbvGrd   | int |Total rooms above grade (does not include bathrooms)|
+| Functional      | object |Home functionality rating|
+| Fireplaces      | int |Number of fireplaces|
+| Fireplace Qu    | object |Fireplace quality|
+| Garage Type     | object |Garage location|
+| Garage Yr Blt   | float |Year garage was built|
+| Garage Finish   | object |Interior finish of the garage|
+| Garage Cars     | float |Size of garage in car capacity|
+| Garage Area     | float |Size of garage in square feet|
+| Garage Qual     | object |Garage quality|
+| Garage Cond     | object |Garage condition|
+| Paved Drive     | object |Paved driveway|
+| Wood Deck SF    | int |Wood deck area in square feet|
+| Open Porch SF   | int |Open porch area in square feet|
+| Enclosed Porch  | int |Enclosed porch area in square feet|
+| 3Ssn Porch      | int |Three season porch area in square feet|
+| Screen Porch    | int |Screen porch area in square feet|
+| Pool Area       | int |Pool area in square feet|
+| Pool QC         | object |Pool quality|
+| Fence           | object |Fence quality|
+| Misc Feature    | object |Miscellaneous feature not covered in other categories|
+| Misc Val        | int |$Value of miscellaneous feature|
+| Mo Sold         | int |Month Sold|
+| Yr Sold         | int |Year Sold|
+| Sale Type       | object |Type of sale|
+| SalePrice       | int |Property's sale price in dollars|
 
-Before you begin working on this project, please do the following:
+## Information from Data
 
-1. Sign up for an account on [Kaggle](https://www.kaggle.com/)
-2. **IMPORTANT**: Click this link ([Regression Challenge Sign Up](https://www.kaggle.com/t/7ef1036844e142cd9edbb6b708633a12)) to **join** the competition (otherwise you will not be able to make submissions!)
-3. Review the material on the [DSI-US-12 Regression Challenge](https://www.kaggle.com/c/dsi-us-12-project-2-regression-challenge)
-4. Review the [data description](http://jse.amstat.org/v19n3/decock/DataDocumentation.txt).
+The data had a lot of missing values to deal with.  For some of the columns they were mostly missing and I dropped those.  Some were simple numeric values like bathrooms so I set those to 0 for the missing.  Other columns were categories that gave value descriptions like good so I set the missing in those to NA as a placement value to signify no information. The final missing values were in columns that had numeric values I set to the mean of the column.
 
-## The Modeling Process
+Two of the houses in the data were rather extreme outliers.  They were large houses that sold for a low price. I dropped those to create my model.
 
-1. The train dataset has all of the columns that you will need to generate and refine your models. The test dataset has all of those columns except for the target that you are trying to predict in your Regression model.
-2. Generate your regression model using the training data. We expect that within this process, you'll be making use of:
-    - train-test split
-    - cross-validation / grid searching for hyperparameters
-    - strong exploratory data analysis to question correlation and relationship across predictive variables
-    - code that reproducibly and consistently applies feature transformation (such as the preprocessing library)
-3. Predict the values for your target column in the test dataset and submit your predictions to Kaggle to see how your model does against unknown data.
-    - **Note**: Kaggle expects to see your submissions in a specific format. Check the challenge's page to make sure you are formatting your CSVs correctly!
-    - **You are limited to models you've learned in class**. In other words, you cannot use XGBoost, Neural Networks or any other advanced model for this project.
-4. Evaluate your models!
-    - consider your evaluation metrics
-    - consider your baseline score
-    - how can your model be used for inference?
-    - why do you believe your model will generalize to new data?
+Using a heatmap and correlations I found some of the most likely features to model.  I also set up some new columns to simplify the data and improve the model.
+Features
+- Overall Quality
+- Above ground square footage
+- Garage square footage
+- Basement square footage
+- Year Remodel
+- Neighborhood
+New Columns
+- Above ground bathroom column that combined the full and half bath above ground columns
+- Basement bathroom column that combined the full and half bath basement columns
+- A ratio for above ground bathrooms divided by rooms as this ratio can have an affect on the sale price
+- A interaction column between the total above ground square footage and the number of rooms as livable space can be an important factor on value
 
-## Submission
+I also found that the sale prices were heavily skewed so to try and create a more normal distribution for modeling I did a log transform on the sale price column.
 
-Materials must be submitted by the beginning of class on **Friday, July 10**.
+Using this information I created a regression model to predict sale prices on new data.
 
-The last day for the Kaggle competition will be **Friday, July 10**.
+Part of this project was a Kaggle submission.  I used the same features but had to add the outliers back in to the data as I needed the correct number of rows when predicting the sale values for the kaggle contest.   This means the model for the contest was not quite as good as the outliers created a higher variance.
 
-Your technical report will be hosted on Github Enterprise. Make sure it includes:
 
-- A README.md (that isn't this file)
-- Jupyter notebook(s) with your analysis and models (renamed to describe your project)
-- At least one successful prediction submission on [DSI-US-12 Regression Challenge](https://www.kaggle.com/c/dsi-us-12-project-2-regression-challenge) --  you should see your name in the "[Leaderboard](https://www.kaggle.com/c/dsi-us-12-project-2-regression-challenge/leaderboard)" tab.
-- Data files
-- Presentation slides
-- Any other necessary files (images, etc.)
+## Conclusions
 
-**Check with your local instructor for how they would like you to submit your repo for review.**
+Using the data I have found correlations of interest that show what parts of a house are important to the sale price. These can include the overall quality, the square footage, the number of rooms, and the neighborhood. Using these features and others I created a model to predict the sale price of others houses in Ames Iowa.
 
----
+This model will allow us to predict sale prices of houses all over the city. This can give us imformation on neighborhood values and the possible locations of investment and redevelopment. The knowledge can also allow us to make smart decision about new development so that we avoid issues with gentrification or displacement of the people living in those neighborhoods.
 
-## Presentation Structure
+We can use infomation from the data like the mean value of houses in each neighborhood or the average year that houses were remodeled in those neighborhoods for comparison. These comparisons can be used to pinpoint neighborhoods of interest for investment but also give an idea of the local home values. With that information we can insure that development in the area will include affodable housing.
 
-- **Must be within time limit established by local instructor.**
-- Use Google Slides or some other visual aid (Keynote, Powerpoint, etc).
-- Consider the audience. **Check with your local instructor for direction**.
-- Start with the **data science problem**.
-- Use visuals that are appropriately scaled and interpretable.
-- Talk about your procedure/methodology (high level).
-- Talk about your primary findings.
-- Make sure you provide **clear recommendations** that follow logically from your analyses and narrative and answer your data science problem.
 
-Be sure to rehearse and time your presentation before class.
+## What Next?
 
----
-
-## Rubric
-Your local instructor will evaluate your project (for the most part) using the following criteria.  You should make sure that you consider and/or follow most if not all of the considerations/recommendations outlined below **while** working through your project.
-
-**Scores will be out of 27 points based on the 9 items in the rubric.** <br>
-*3 points per section*<br>
-
-| Score | Interpretation |
-| --- | --- |
-| **0** | *Project fails to meet the minimum requirements for this item.* |
-| **1** | *Project meets the minimum requirements for this item, but falls significantly short of portfolio-ready expectations.* |
-| **2** | *Project exceeds the minimum requirements for this item, but falls short of portfolio-ready expectations.* |
-| **3** | *Project meets or exceeds portfolio-ready expectations; demonstrates a thorough understanding of every outlined consideration.* |
-
-### The Data Science Process
-
-**Problem Statement**
-- Is it clear what the student plans to do?
-- What type of model will be developed?
-- How will success be evaluated?
-- Is the scope of the project appropriate?
-- Is it clear who cares about this or why this is important to investigate?
-- Does the student consider the audience and the primary and secondary stakeholders?
-
-**Data Cleaning and EDA**
-- Are missing values imputed appropriately?
-- Are distributions examined and described?
-- Are outliers identified and addressed?
-- Are appropriate summary statistics provided?
-- Are steps taken during data cleaning and EDA framed appropriately?
-- Does the student address whether or not they are likely to be able to answer their problem statement with the provided data given what they've discovered during EDA?
-
-**Preprocessing and Modeling**
-- Are categorical variables one-hot encoded?
-- Does the student investigate or manufacture features with linear relationships to the target?
-- Have the data been scaled appropriately?
-- Does the student properly split and/or sample the data for validation/training purposes?
-- Does the student utilize feature selection to remove noisy or multi-collinear features?
-- Does the student test and evaluate a variety of models to identify a production algorithm (**AT MINIMUM:** linear regression, lasso, and ridge)?
-- Does the student defend their choice of production model relevant to the data at hand and the problem?
-- Does the student explain how the model works and evaluate its performance successes/downfalls?
-
-**Evaluation and Conceptual Understanding**
-- Does the student accurately identify and explain the baseline score?
-- Does the student select and use metrics relevant to the problem objective?
-- Is more than one metric utilized in order to better assess performance?
-- Does the student interpret the results of their model for purposes of inference?
-- Is domain knowledge demonstrated when interpreting results?
-- Does the student provide appropriate interpretation with regards to descriptive and inferential statistics?
-
-**Conclusion and Recommendations**
-- Does the student provide appropriate context to connect individual steps back to the overall project?
-- Is it clear how the final recommendations were reached?
-- Are the conclusions/recommendations clearly stated?
-- Does the conclusion answer the original problem statement?
-- Does the student address how findings of this research can be applied for the benefit of stakeholders?
-- Are future steps to move the project forward identified?
-
-### Organization and Professionalism
-
-**Project Organization**
-- Are modules imported correctly (using appropriate aliases)?
-- Are data imported/saved using relative paths?
-- Does the README provide a good executive summary of the project?
-- Is markdown formatting used appropriately to structure notebooks?
-- Are there an appropriate amount of comments to support the code?
-- Are files & directories organized correctly?
-- Are there unnecessary files included?
-- Do files and directories have well-structured, appropriate, consistent names?
-
-**Visualizations**
-- Are sufficient visualizations provided?
-- Do plots accurately demonstrate valid relationships?
-- Are plots labeled properly?
-- Are plots interpreted appropriately?
-- Are plots formatted and scaled appropriately for inclusion in a notebook-based technical report?
-
-**Python Syntax and Control Flow**
-- Is care taken to write human readable code?
-- Is the code syntactically correct (no runtime errors)?
-- Does the code generate desired results (logically correct)?
-- Does the code follows general best practices and style guidelines?
-- Are Pandas functions used appropriately?
-- Are `sklearn` methods used appropriately?
-
-**Presentation**
-- Is the problem statement clearly presented?
-- Does a strong narrative run through the presentation building toward a final conclusion?
-- Are the conclusions/recommendations clearly stated?
-- Is the level of technicality appropriate for the intended audience?
-- Is the student substantially over or under time?
-- Does the student appropriately pace their presentation?
-- Does the student deliver their message with clarity and volume?
-- Are appropriate visualizations generated for the intended audience?
-- Are visualizations necessary and useful for supporting conclusions/explaining findings?
-
-In order to pass the project, students must earn a minimum score of 1 for each category.
-- Earning below a 1 in one or more of the above categories would result in a failing project.
-- While a minimum of 1 in each category is the required threshold for graduation, students should aim to earn at least an average of 1.5 across each category. An average score below 1.5, while it may be passing, means students may want to solicit specific feedback in order to significantly improve the project before showcasing it as part of a portfolio or the job search.
-
-### REMEMBER:
-
-This is a learning environment and you are encouraged to try new things, even if they don't work out as well as you planned! While this rubric outlines what we look for in a _good_ project, it is up to you to go above and beyond to create a _great_ project. **Learn from your failures and you'll be prepared to succeed in the workforce**.
+- Seeing if other values might have an effect on the model like the lot that the house is on or side features 
+- using some more regularization techniques like the lasso or ridge on the data
+- looking into what other factors might effect housing values in the lower value neighborhoods
+- things like demographics, quality of the area, schools, or crime
